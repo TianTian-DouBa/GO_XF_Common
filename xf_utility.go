@@ -48,15 +48,21 @@ func main() {
 	AddLog(40, "test trace")
 	AddLog(22, "test undefine")
 	*/
-	fmt.Println("----------------mac---------------")
+	fmt.Println("----------------getMac---------------")
 	nics, err := getMac()
 	if err == nil {
 		for _, nic := range nics {
 			fmt.Println(nic.Index, nic.Name, nic.Mac)
 		}
 	}
-	fmt.Println("----------------filtered mac---------------")
-	result, err := getMacOne(nics)
+	fmt.Println("----------------getMacOne---------------")
+	nics1 := []Nic{
+		{1,"aa","1c:1b:0d:e1:12:eb"},
+		{2,"bb","00:50:56:c0:00:01"},
+		{3,"cc","00:50:56:c0:00:08"},
+		{4,"dd","1b:1b:0d:e1:12:eb"},
+	}
+	result, err := getMacOne(nics1)
 	if err == nil {
 		fmt.Println(result)
 	}

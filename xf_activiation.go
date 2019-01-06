@@ -5,6 +5,7 @@ import (
     "os/exec"
     //"fmt"
     "strings"
+    "sort"
 )
 
 var macReserved = []string {
@@ -39,27 +40,43 @@ func getMac() ([]Nic, error) {
 
 func getMacOne(nics []Nic) (string, error) {
     filtedMacs := make([]Nic,0,10)
+    macs := make([]string,0,10)
     if len(nics) > 0 {
-        for _, nic := range nics {
-            filtered := true
-            for _, check := range macReserved {
-                //fmt.Println("mac", nic.Mac)
-                //fmt.Println("check", check)
-                if strings.Index(nic.Mac,check) == 0 {
-                    filtered = false
-                    break
+        if len(nics) == 1 {
+            return nics[0].Mac, nil
+        } else { // len(nics) > 1
+            for _, nic := range nics {
+                filtered := true
+                for _, check := range macReserved {
+                    //fmt.Println("mac", nic.Mac)
+                    //fmt.Println("check", check)
+                    if strings.Index(nic.Mac,check) == 0 {
+                        filtered = false
+                        break
+                    }
                 }
-            }
-            if filtered {
-                filtedMacs = append(filtedMacs, nic)
-            }   
+                if filtered {
+                    filtedMacs = append(filtedMacs, nic)
+                }   
+            } 
         }
+    } else {
+        return "", nil
     }
     //fmt.Println("filtedMacs: ", filtedMacs)
     if len(filtedMacs) == 1 {
         return filtedMacs[0].Mac, nil
+    } else if len(filtedMacs) > 1 {
+        for _, nic :=  range filtedMacs {
+            macs = append(macs, nic.Mac)
+        }
+    } else { //len(filtedMacs) == 0
+        for _, nic1 :=  range nics {
+            macs = append(macs, nic1.Mac)
+        }
     }
-    return "", nil
+    sort.Strings(macs)
+    return macs[0], nil
 }
 
 func getBiosUuid() (string, error) {
