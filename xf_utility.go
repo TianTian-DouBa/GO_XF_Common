@@ -4,6 +4,7 @@ package main
 import (
 	"log"
 	"os"
+	"fmt"
 )
 
 var (
@@ -39,13 +40,31 @@ func AddLog(logCategory int, logString string, args ...string) {
 }
 
 func main() {
-    Init()
-
+	Init()
+	/*
 	AddLog(10, "test error")
 	AddLog(20, "test warning")
 	AddLog(30, "test info")
 	AddLog(40, "test trace")
 	AddLog(22, "test undefine")
+	*/
+	fmt.Println("----------------mac---------------")
+	nics, err := getMac()
+	if err == nil {
+		for _, nic := range nics {
+			fmt.Println(nic.Index, nic.Name, nic.Mac)
+		}
+	}
+	fmt.Println("----------------filtered mac---------------")
+	result, err := getMacOne(nics)
+	if err == nil {
+		fmt.Println(result)
+	}
+	fmt.Println("----------------bios uuid---------------")
+	biosUuid, err := getBiosUuid()
+	if err == nil {
+		fmt.Print(biosUuid)
+	}
 }
 
 /*AddLog: generate log
